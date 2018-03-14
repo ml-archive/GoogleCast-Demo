@@ -310,7 +310,15 @@ class Player: UIView {
     }
     
     @objc private func sendCurrentTimeCastSessionRequest() {
-        //delegate?.sendCurrentTimeCastSessionRequest()
+        CastManager.shared.getSessionCurrentTime { (time) in
+            guard let time = time,
+                  let currentItem = player.currentItem else { return }
+            let duration = currentItem.asset.duration.seconds
+            self.slider.value = Float(time / duration)
+            
+            self.totalTimeLabel.text = duration.toTimeString() as String
+            self.currentTimeLabel.text = time.toTimeString() as String
+        }
     }
     
     // MARK: - Player Slider Actions
@@ -320,9 +328,9 @@ class Player: UIView {
         let duration = currentItem.asset.duration.seconds
         
         let timeToSeek = duration * Double(sender.value)
-        player.seek(to: CMTime.init(seconds: timeToSeek, preferredTimescale: CMTimeScale.max))
         
-        //sendChangeToCast(time: player.duration * Double(sender.value))
+        player.seek(to: CMTime.init(seconds: timeToSeek, preferredTimescale: CMTimeScale.max))
+        sendChangeToCast(time: timeToSeek)
     }
     
     private func addSliderRecognizers() {
@@ -346,8 +354,14 @@ class Player: UIView {
     
     private func sendChangeToCast(time: TimeInterval) {
         //if we are in Cast Mode then restart the cast at the position slided at
-//        if playerType != .live && (playbackState == .pauseCast || playbackState == .playCast) {
-//            delegate?.playbackStateChanged(state: playbackState, at: player.currentTime)
-//        }
+        if playbackState == .pauseCast || playbackState == .playCast {
+            let currentTime = player.currentTime().seconds
+            CastManager.shared.playSelectedItemRemotely(to: currentTime, completion: { (done) in
+                if !done {
+                    self.playbackState = .pause
+                    self.startPlayer(nil)
+                }
+            })
+        }
     }
 }

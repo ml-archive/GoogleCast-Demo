@@ -22,6 +22,14 @@ class CastManager: NSObject {
     static let shared = CastManager()
     
     private var sessionManager: GCKSessionManager!
+    var hasConnectionEstablished: Bool {
+        let castSession = sessionManager.currentCastSession
+        if castSession != nil {
+            return true
+        } else {
+            return false
+        }
+    }
     
     private var sessionStatusListener: ((CastSessionStatus) -> Void)?
     private var sessionStatus: CastSessionStatus! {
@@ -37,6 +45,7 @@ class CastManager: NSObject {
         createSessionManager()
         style()
         miniControllerStyle()
+        styleDeviceChooser()
     }
     
     private func createSessionManager() {
@@ -57,49 +66,50 @@ class CastManager: NSObject {
     
     private func style() {
         let castStyle = GCKUIStyle.sharedInstance()
-        castStyle.castViews.backgroundColor = .black
-        castStyle.castViews.bodyTextColor = .white
-        castStyle.castViews.buttonTextColor = .white
-        castStyle.castViews.headingTextColor = .white
-        castStyle.castViews.captionTextColor = .white
-        castStyle.castViews.iconTintColor = .white
+        castStyle.castViews.backgroundColor = .white
+        castStyle.castViews.bodyTextColor = UIColor.nodesColor
+        castStyle.castViews.buttonTextColor = UIColor.nodesColor
+        castStyle.castViews.headingTextColor = UIColor.nodesColor
+        castStyle.castViews.captionTextColor = UIColor.nodesColor
+        castStyle.castViews.iconTintColor = UIColor.nodesColor
+    
+        castStyle.apply()
+    }
+    
+    private func styleDeviceChooser() {
+        let castStyle = GCKUIStyle.sharedInstance()
+        castStyle.castViews.deviceControl.deviceChooser.buttonTextColor = .white
         castStyle.apply()
     }
     
     private func miniControllerStyle() {
         let castStyle = GCKUIStyle.sharedInstance()
-        castStyle.castViews.mediaControl.miniController.backgroundColor = .white
-        castStyle.castViews.mediaControl.miniController.bodyTextColor = .black
-        castStyle.castViews.mediaControl.miniController.buttonTextColor = .black
-        castStyle.castViews.mediaControl.miniController.headingTextColor = .black
-        castStyle.castViews.mediaControl.miniController.captionTextColor = .black
-        castStyle.castViews.mediaControl.miniController.iconTintColor = .black
+        castStyle.castViews.mediaControl.miniController.backgroundColor = UIColor.nodesColor
+        castStyle.castViews.mediaControl.miniController.bodyTextColor = .white
+        castStyle.castViews.mediaControl.miniController.buttonTextColor = .white
+        castStyle.castViews.mediaControl.miniController.headingTextColor = .white
+        castStyle.castViews.mediaControl.miniController.captionTextColor = .white
+        castStyle.castViews.mediaControl.miniController.iconTintColor = .white
+        
         castStyle.apply()
     }
     
     // MARK: - Build Meta
     
-    func buildMediaInformation(with title: String, with description: String, with studio: String, with duration: TimeInterval, with movieUrl: String, with streamType: GCKMediaStreamType, with episode: String?, with season: String?, with thumbnailUrl: String?) -> GCKMediaInformation {
-        let metadata = buildMetadata(with: title, with: description, with: studio, with: episode, with: season, with: thumbnailUrl)
+    func buildMediaInformation(with title: String, with description: String, with studio: String, with duration: TimeInterval, with movieUrl: String, with streamType: GCKMediaStreamType, with thumbnailUrl: String?) -> GCKMediaInformation {
+        let metadata = buildMetadata(with: title, with: description, with: studio, with: thumbnailUrl)
         
         let mediaInfo = GCKMediaInformation.init(contentID: movieUrl, streamType: streamType, contentType: "video/m3u8", metadata: metadata, streamDuration: duration, mediaTracks: nil, textTrackStyle: nil, customData: nil)
         
         return mediaInfo
     }
     
-    private func buildMetadata(with title: String, with description: String, with studio: String, with episode: String?, with season: String?, with thumbnailUrl: String?) -> GCKMediaMetadata {
+    private func buildMetadata(with title: String, with description: String, with studio: String, with thumbnailUrl: String?) -> GCKMediaMetadata {
         let metadata = GCKMediaMetadata.init(metadataType: .movie)
         metadata.setString(title, forKey: kGCKMetadataKeyTitle)
         metadata.setString(description, forKey: "description")
         let deviceName = sessionManager.currentCastSession?.device.friendlyName ?? studio
         metadata.setString(deviceName, forKey: kGCKMetadataKeyStudio)
-        if let episode = episode {
-            metadata.setString(episode, forKey: kGCKMetadataKeyEpisodeNumber)
-        }
-        
-        if let season = season {
-            metadata.setString(season, forKey: kGCKMetadataKeySeasonNumber)
-        }
         
         if let thumbnailUrl = thumbnailUrl, let url = URL(string: thumbnailUrl) {
             metadata.addImage(GCKImage.init(url: url, width: 720, height: 480))
@@ -116,7 +126,6 @@ class CastManager: NSObject {
         if castSession != nil {
             let options = GCKMediaLoadOptions()
             options.playPosition = time
-            options.autoplay = true
             castSession?.remoteMediaClient?.loadMedia(mediaInfo, with: options)
             completion(true)
             

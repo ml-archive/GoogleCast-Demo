@@ -12,7 +12,7 @@ class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var label: UILabel! {
         didSet {
-            label.textColor = UIColor(red: 255 / 255, green: 77 / 255, blue: 121 / 255, alpha: 1)
+            label.textColor = UIColor.nodesColor
         }
     }
 }

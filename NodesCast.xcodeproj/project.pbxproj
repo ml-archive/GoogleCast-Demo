@@ -20,6 +20,8 @@
 		423008D420594F930014B591 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008D320594F930014B591 /* TableViewCell.swift */; };
 		423008D620594FAD0014B591 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423008D520594FAD0014B591 /* TableViewCell.xib */; };
 		423008DA205953BA0014B591 /* CastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008D9205953BA0014B591 /* CastManager.swift */; };
+		423008DD205975850014B591 /* UIColor+NodesColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008DC205975850014B591 /* UIColor+NodesColor.swift */; };
+		423008E12059807F0014B591 /* TimeInterval+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008E02059807F0014B591 /* TimeInterval+String.swift */; };
 		C33F63E2D330FB1A0180F185 /* Pods_NodesCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F13DA952D1222393B1683F15 /* Pods_NodesCast.framework */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,8 @@
 		423008D320594F930014B591 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		423008D520594FAD0014B591 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		423008D9205953BA0014B591 /* CastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastManager.swift; sourceTree = "<group>"; };
+		423008DC205975850014B591 /* UIColor+NodesColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+NodesColor.swift"; sourceTree = "<group>"; };
+		423008E02059807F0014B591 /* TimeInterval+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+String.swift"; sourceTree = "<group>"; };
 		F13DA952D1222393B1683F15 /* Pods_NodesCast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NodesCast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -78,18 +82,18 @@
 			isa = PBXGroup;
 			children = (
 				423008B3205911410014B591 /* AppDelegate.swift */,
-				423008CF205945110014B591 /* FirstViewController.swift */,
-				423008D320594F930014B591 /* TableViewCell.swift */,
-				423008D520594FAD0014B591 /* TableViewCell.xib */,
-				423008B5205911410014B591 /* PlayerViewController.swift */,
 				423008CB20591B7C0014B591 /* Style.swift */,
-				423008DB205953C00014B591 /* Cast Manager */,
+				423008D120594CEA0014B591 /* MediaItem.swift */,
+				423008DE205978440014B591 /* First ViewController */,
+				423008DF205978520014B591 /* Player ViewController */,
 				423008C8205916550014B591 /* Player */,
+				423008DB205953C00014B591 /* Cast Manager */,
 				423008B7205911410014B591 /* Main.storyboard */,
-				423008BA205911410014B591 /* Assets.xcassets */,
 				423008BC205911410014B591 /* LaunchScreen.storyboard */,
 				423008BF205911410014B591 /* Info.plist */,
-				423008D120594CEA0014B591 /* MediaItem.swift */,
+				423008DC205975850014B591 /* UIColor+NodesColor.swift */,
+				423008E02059807F0014B591 /* TimeInterval+String.swift */,
+				423008BA205911410014B591 /* Assets.xcassets */,
 			);
 			path = NodesCast;
 			sourceTree = "<group>";
@@ -109,6 +113,24 @@
 				423008D9205953BA0014B591 /* CastManager.swift */,
 			);
 			path = "Cast Manager";
+			sourceTree = "<group>";
+		};
+		423008DE205978440014B591 /* First ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				423008CF205945110014B591 /* FirstViewController.swift */,
+				423008D320594F930014B591 /* TableViewCell.swift */,
+				423008D520594FAD0014B591 /* TableViewCell.xib */,
+			);
+			path = "First ViewController";
+			sourceTree = "<group>";
+		};
+		423008DF205978520014B591 /* Player ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				423008B5205911410014B591 /* PlayerViewController.swift */,
+			);
+			path = "Player ViewController";
 			sourceTree = "<group>";
 		};
 		DA640568A4A86A1CE21B7B27 /* Frameworks */ = {
@@ -263,8 +285,10 @@
 				423008B6205911410014B591 /* PlayerViewController.swift in Sources */,
 				423008D420594F930014B591 /* TableViewCell.swift in Sources */,
 				423008DA205953BA0014B591 /* CastManager.swift in Sources */,
+				423008E12059807F0014B591 /* TimeInterval+String.swift in Sources */,
 				423008CE205921720014B591 /* Castable.swift in Sources */,
 				423008B4205911410014B591 /* AppDelegate.swift in Sources */,
+				423008DD205975850014B591 /* UIColor+NodesColor.swift in Sources */,
 				423008CC20591B7C0014B591 /* Style.swift in Sources */,
 				423008D0205945110014B591 /* FirstViewController.swift in Sources */,
 			);

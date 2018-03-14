@@ -10,10 +10,11 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Player View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="NodesCast" customModuleProvider="target" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <viewController storyboardIdentifier="PlayerViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="PlayerViewController" customModule="NodesCast" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -22,9 +23,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="xtS-AC-CtR"/>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="479.19999999999999" y="133.5832083958021"/>
+            <point key="canvasLocation" x="1210" y="134"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="KKp-uD-WoH">
@@ -37,12 +37,43 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="FaI-ci-7wu"/>
+                        <segue destination="LJc-TF-7gA" kind="relationship" relationship="rootViewController" id="bs2-8o-Odz"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LF9-HV-iI0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-335" y="134"/>
+        </scene>
+        <!--First View Controller-->
+        <scene sceneID="dc9-2A-MbP">
+            <objects>
+                <viewController storyboardIdentifier="FirstViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="LJc-TF-7gA" customClass="FirstViewController" customModule="NodesCast" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hMA-hG-iA9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="CtT-6r-0ly">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ZGZ-Ya-i5u" firstAttribute="trailing" secondItem="CtT-6r-0ly" secondAttribute="trailing" id="QeL-h6-OTs"/>
+                            <constraint firstItem="CtT-6r-0ly" firstAttribute="top" secondItem="ZGZ-Ya-i5u" secondAttribute="top" id="Xnc-rB-V1U"/>
+                            <constraint firstItem="ZGZ-Ya-i5u" firstAttribute="bottom" secondItem="CtT-6r-0ly" secondAttribute="bottom" id="ekY-jC-eqe"/>
+                            <constraint firstItem="CtT-6r-0ly" firstAttribute="leading" secondItem="ZGZ-Ya-i5u" secondAttribute="leading" id="rTu-cK-ctO"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ZGZ-Ya-i5u"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="GBJ-W1-Ucd"/>
+                    <connections>
+                        <outlet property="tableView" destination="CtT-6r-0ly" id="L5j-yp-vAT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2FY-Wn-gdy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="402" y="134"/>
         </scene>
     </scenes>
 </document>

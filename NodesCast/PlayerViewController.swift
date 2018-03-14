@@ -7,24 +7,42 @@
 //
 
 import UIKit
+import GoogleCast
 
-class ViewController: UIViewController {
+class PlayerViewController: UIViewController, Castable {
     
+    var mediaItem: MediaItem!
     private var playerView: Player!
+    private var castButton: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         title = "NodesCast"
+
         createPlayerView()
+        
+        addCastButton()
     }
+
+    // MARK: - Cast Button
+    
+    private func addCastButton() {
+        castButton = googleCastBarButton
+        navigationItem.rightBarButtonItems = [castButton]
+    }
+    
+    // MARK: - Player
 
     private func createPlayerView() {
         let width = view.frame.width
         let height = width * 0.5625
         playerView = Player(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        playerView.mediaItem = mediaItem
+        playerView.initPlayerLayer()
         view.addSubview(playerView)
     }
+
 }
 

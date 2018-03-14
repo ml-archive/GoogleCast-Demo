@@ -8,9 +8,9 @@
 
 import UIKit
 import AVFoundation
+import GoogleCast
 
 enum PlaybackState {
-    case createdCast
     case created
     case playCast
     case play
@@ -22,6 +22,7 @@ enum PlaybackState {
 
 class Player: UIView {
     
+    var mediaItem: MediaItem!
     private var player: AVPlayer!
     private var playerLayer: AVPlayerLayer!
     private var playbackState: PlaybackState = .created
@@ -32,20 +33,82 @@ class Player: UIView {
         super.init(frame: frame)
         
         backgroundColor = .lightGray
-        initPlayerLayer()
-        createPlayPauseButton()
+        listenForCastConnection()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func initPlayerLayer() {
-        guard let url = URL(string: "https://devimages-cdn.apple.com/samplecode/avfoundationMedia/AVFoundationQueuePlayer_HLS2/master.m3u8") else { return }
+    func initPlayerLayer() {
+        guard let url = URL(string: mediaItem.videoUrl) else { return }
         player = AVPlayer(url: url)
         playerLayer = AVPlayerLayer(player: player)
         layer.addSublayer(playerLayer)
         playerLayer.frame = bounds
+        
+        createPlayPauseButton()
+    }
+    
+    // MARK: - Add Cast Connection Listener
+    
+    private func listenForCastConnection() {
+        let sessionStatusListener: (CastSessionStatus) -> Void = { status in
+            switch status {
+            case .started:
+                self.startCastPlay()
+            case .resumed:
+                self.continueCastPlay()
+            case .alreadyConnected:
+                break
+            case .ended, .failedToStart:
+                if self.playbackState == .playCast {
+                    self.playbackState = .pause
+                    self.startPlayer(nil)
+                } else if self.playbackState == .pauseCast {
+                    self.playbackState = .play
+                    self.pausePlayer(nil)
+                }
+            }
+        }
+        
+        CastManager.shared.addSessionStatusListener(listener: sessionStatusListener)
+
+    }
+    
+    private func startCastPlay() {
+        guard let currentItem = player.currentItem else { return }
+        let duration = currentItem.asset.duration.seconds
+        playbackState = .playCast
+        player.pause()
+        let castMediaInfo = CastManager.shared.buildMediaInformation(with: mediaItem.name, with: mediaItem.about, with: "Nodes", with: duration, with: mediaItem.videoUrl, with: GCKMediaStreamType.buffered, with: nil, with: nil, with: mediaItem.thumbnailUrl)
+        CastManager.shared.startSelectedItemRemotely(castMediaInfo, at: player.currentTime().seconds, completion: { done in
+            if !done {
+                self.playbackState = .pause
+                self.startPlayer(nil)
+            }
+        })
+    }
+    
+    private func continueCastPlay() {
+        let durationCurrent = player.currentTime().seconds
+        playbackState = .playCast
+        CastManager.shared.playSelectedItemRemotely(to: durationCurrent) { (done) in
+            if !done {
+                self.playbackState = .pause
+                self.startPlayer(nil)
+            }
+        }
+    }
+    
+    private func pauseCastPlay() {
+        playbackState = .pauseCast
+        CastManager.shared.pauseSelectedItemRemotely(to: nil) { (done) in
+            if !done {
+                self.playbackState = .pause
+                self.startPlayer(nil)
+            }
+        }
     }
     
     // MARK: - Play/Pause/Replay Button
@@ -88,16 +151,30 @@ class Player: UIView {
     // MARK: Start Player
     
     @objc private func startPlayer(_ sender: Any?) {
-        player?.play()
-        playbackState = .play
+        if playbackState == .pause || playbackState == .created {
+            player?.play()
+            playbackState = .play
+        } else {
+            player?.pause()
+            playbackState = .playCast
+            continueCastPlay()
+        }
+        
         changeToPauseButton()
     }
 
     // MARK: Pause Player
     
     @objc private func pausePlayer(_ sender: Any?) {
-        player?.pause()
-        playbackState = .pause
+        if playbackState == .play {
+            player?.pause()
+            playbackState = .pause
+        } else {
+            player?.pause()
+            playbackState = .pauseCast
+            pauseCastPlay()
+        }
+        
         changeToPlayButton()
     }
 

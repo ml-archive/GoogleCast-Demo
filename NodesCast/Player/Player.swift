@@ -23,6 +23,8 @@ enum PlaybackState {
 
 class Player: UIView {
     
+    private let timeObserver = "currentItem.loadedTimeRanges"
+    
     var mediaItem: MediaItem!
     private var player: AVPlayer!
     private var playerLayer: AVPlayerLayer!
@@ -59,14 +61,14 @@ class Player: UIView {
     override func removeFromSuperview() {
         super.removeFromSuperview()
         
-        player.removeObserver(self, forKeyPath: "status")
+        player.removeObserver(self, forKeyPath: timeObserver)
     }
     
     func initPlayerLayer() {
         guard let url = URL(string: mediaItem.videoUrl) else { return }
         
         player = AVPlayer(url: url)
-        player.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+        player.addObserver(self, forKeyPath: timeObserver, options: .new, context: nil)
         playerLayer = AVPlayerLayer(player: player)
         layer.addSublayer(playerLayer)
         playerLayer.frame = bounds
@@ -87,8 +89,11 @@ class Player: UIView {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if object is AVPlayer && keyPath == "status" {
-            if player.status == AVPlayerStatus.readyToPlay {
+        if object is AVPlayer && keyPath == timeObserver {
+            let loadedTimeRanges = player.currentItem?.loadedTimeRanges
+            guard let timeRanges = loadedTimeRanges, timeRanges.count > 0, let timeRange = timeRanges[0] as? CMTimeRange else { return }
+            let currentBufferDuration = CMTimeGetSeconds(CMTimeAdd(timeRange.start, timeRange.duration))
+            if player.status == AVPlayerStatus.readyToPlay && currentBufferDuration > 2 {
                 createPlayPauseButton()
                 createButtonStackView()
                 spinner.stopAnimating()

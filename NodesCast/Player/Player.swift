@@ -94,8 +94,12 @@ class Player: UIView {
             guard let timeRanges = loadedTimeRanges, timeRanges.count > 0, let timeRange = timeRanges[0] as? CMTimeRange else { return }
             let currentBufferDuration = CMTimeGetSeconds(CMTimeAdd(timeRange.start, timeRange.duration))
             if player.status == AVPlayerStatus.readyToPlay && currentBufferDuration > 2 {
-                createPlayPauseButton()
-                createButtonStackView()
+                if playPauseButton == nil {
+                    createPlayPauseButton()
+                }
+                if buttonStackView == nil {
+                    createButtonStackView()
+                }
                 spinner.stopAnimating()
             }
         }

@@ -22,6 +22,7 @@
 		423008DA205953BA0014B591 /* CastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008D9205953BA0014B591 /* CastManager.swift */; };
 		423008DD205975850014B591 /* UIColor+NodesColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008DC205975850014B591 /* UIColor+NodesColor.swift */; };
 		423008E12059807F0014B591 /* TimeInterval+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008E02059807F0014B591 /* TimeInterval+String.swift */; };
+		423008E6205A6D1A0014B591 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 423008E5205A6D1A0014B591 /* HomeKit.framework */; };
 		C33F63E2D330FB1A0180F185 /* Pods_NodesCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F13DA952D1222393B1683F15 /* Pods_NodesCast.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,8 @@
 		423008D9205953BA0014B591 /* CastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastManager.swift; sourceTree = "<group>"; };
 		423008DC205975850014B591 /* UIColor+NodesColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+NodesColor.swift"; sourceTree = "<group>"; };
 		423008E02059807F0014B591 /* TimeInterval+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+String.swift"; sourceTree = "<group>"; };
+		423008E2205A6D150014B591 /* NodesCast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NodesCast.entitlements; sourceTree = "<group>"; };
+		423008E5205A6D1A0014B591 /* HomeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HomeKit.framework; path = System/Library/Frameworks/HomeKit.framework; sourceTree = SDKROOT; };
 		F13DA952D1222393B1683F15 /* Pods_NodesCast.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NodesCast.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -53,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				423008E6205A6D1A0014B591 /* HomeKit.framework in Frameworks */,
 				C33F63E2D330FB1A0180F185 /* Pods_NodesCast.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -81,6 +85,7 @@
 		423008B2205911410014B591 /* NodesCast */ = {
 			isa = PBXGroup;
 			children = (
+				423008E2205A6D150014B591 /* NodesCast.entitlements */,
 				423008B3205911410014B591 /* AppDelegate.swift */,
 				423008CB20591B7C0014B591 /* Style.swift */,
 				423008D120594CEA0014B591 /* MediaItem.swift */,
@@ -136,6 +141,7 @@
 		DA640568A4A86A1CE21B7B27 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				423008E5205A6D1A0014B591 /* HomeKit.framework */,
 				F13DA952D1222393B1683F15 /* Pods_NodesCast.framework */,
 			);
 			name = Frameworks;
@@ -186,6 +192,17 @@
 					423008AF205911410014B591 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.HomeKit = {
+								enabled = 1;
+							};
+							com.apple.WAC = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -428,6 +445,7 @@
 			baseConfigurationReference = 1303A8DB570B57A48D9EF0EA /* Pods-NodesCast.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NodesCast/NodesCast.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HW27H6H98R;
 				INFOPLIST_FILE = NodesCast/Info.plist;
@@ -444,6 +462,7 @@
 			baseConfigurationReference = 1C0AF50A676EAAEEF422DD89 /* Pods-NodesCast.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NodesCast/NodesCast.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = HW27H6H98R;
 				INFOPLIST_FILE = NodesCast/Info.plist;

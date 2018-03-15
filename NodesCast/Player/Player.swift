@@ -29,6 +29,8 @@ class Player: UIView {
     private var playbackState: PlaybackState = .created
     
     private var playPauseButton: UIButton!
+    private var spinner: UIActivityIndicatorView!
+
     //bottom controls
     private var buttonStackView: UIStackView!
     private var currentTimeLabel: UILabel!
@@ -54,15 +56,44 @@ class Player: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func removeFromSuperview() {
+        super.removeFromSuperview()
+        
+        player.removeObserver(self, forKeyPath: "status")
+    }
+    
     func initPlayerLayer() {
         guard let url = URL(string: mediaItem.videoUrl) else { return }
+        
         player = AVPlayer(url: url)
+        player.addObserver(self, forKeyPath: "status", options: .new, context: nil)
         playerLayer = AVPlayerLayer(player: player)
         layer.addSublayer(playerLayer)
         playerLayer.frame = bounds
-        
-        createPlayPauseButton()
-        createButtonStackView()
+        createSpinner()
+    }
+    
+    private func createSpinner() {
+        spinner = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        spinner.hidesWhenStopped = true
+        spinner.stopAnimating()
+        addSubview(spinner)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        spinner.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        spinner.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        spinner.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        spinner.startAnimating()
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if object is AVPlayer && keyPath == "status" {
+            if player.status == AVPlayerStatus.readyToPlay {
+                createPlayPauseButton()
+                createButtonStackView()
+                spinner.stopAnimating()
+            }
+        }
     }
     
     // MARK: - Add Cast Connection Listener
@@ -250,6 +281,7 @@ class Player: UIView {
         slider.isUserInteractionEnabled = true
         slider.minimumValue = 0
         slider.maximumValue = 1
+        slider.tintColor = UIColor.nodesColor
         slider.value = 0
         slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         addSliderRecognizers()
@@ -339,17 +371,19 @@ class Player: UIView {
     }
     
     @objc private func tapSlider(_ recognizer: UIGestureRecognizer) {
-//        let pointTapped: CGPoint = recognizer.location(in: self)
-//
-//        let positionOfSlider: CGPoint = slider.frame.origin
-//        let widthOfSlider: CGFloat = slider.frame.size.width
-//        let newValue = ((pointTapped.x - positionOfSlider.x) * CGFloat(slider.maximumValue) / widthOfSlider)
-//
-//        slider.setValue(Float(newValue), animated: true)
-//        player.currentTime = player.duration * Double(slider.value)
-//
-//        startSpinner()
-//        sendChangeToCast(time: player.duration * Double(slider.value))
+        let pointTapped: CGPoint = recognizer.location(in: self)
+
+        let positionOfSlider: CGPoint = slider.frame.origin
+        let widthOfSlider: CGFloat = slider.frame.size.width
+        let newValue = ((pointTapped.x - positionOfSlider.x) * CGFloat(slider.maximumValue) / widthOfSlider)
+
+        slider.setValue(Float(newValue), animated: true)
+        
+        guard let currentItem = player.currentItem else { return }
+        let duration = currentItem.asset.duration.seconds
+        let timeToSeek = duration * Double(slider.value)
+        player.seek(to: CMTime.init(seconds: timeToSeek, preferredTimescale: CMTimeScale.max))
+        sendChangeToCast(time: timeToSeek)
     }
     
     private func sendChangeToCast(time: TimeInterval) {

@@ -45,7 +45,7 @@ class CastManager: NSObject {
         createSessionManager()
         style()
         miniControllerStyle()
-        styleDeviceChooser()
+        styleConnectionController()
     }
     
     private func createSessionManager() {
@@ -56,6 +56,7 @@ class CastManager: NSObject {
     private func initialiseContext() {
         //application Id registered
         let options = GCKCastOptions(discoveryCriteria: GCKDiscoveryCriteria.init(applicationID: "EC926046"))
+        options.disableDiscoveryAutostart = false
         GCKCastContext.setSharedInstanceWith(options)
         GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
     }
@@ -67,24 +68,24 @@ class CastManager: NSObject {
     private func style() {
         let castStyle = GCKUIStyle.sharedInstance()
         castStyle.castViews.backgroundColor = .white
-        castStyle.castViews.bodyTextColor = UIColor.nodesColor
-        castStyle.castViews.buttonTextColor = UIColor.nodesColor
-        castStyle.castViews.headingTextColor = UIColor.nodesColor
-        castStyle.castViews.captionTextColor = UIColor.nodesColor
-        castStyle.castViews.iconTintColor = UIColor.nodesColor
+        castStyle.castViews.bodyTextColor = .nodesColor
+        castStyle.castViews.buttonTextColor = .white
+        castStyle.castViews.headingTextColor = .nodesColor
+        castStyle.castViews.captionTextColor = .nodesColor
+        castStyle.castViews.iconTintColor = .nodesColor
     
         castStyle.apply()
     }
     
-    private func styleDeviceChooser() {
+    private func styleConnectionController() {
         let castStyle = GCKUIStyle.sharedInstance()
-        castStyle.castViews.deviceControl.deviceChooser.buttonTextColor = .white
+        //castStyle.castViews.deviceControl.connectionController.buttonTextColor = .nodesColor
         castStyle.apply()
     }
     
     private func miniControllerStyle() {
         let castStyle = GCKUIStyle.sharedInstance()
-        castStyle.castViews.mediaControl.miniController.backgroundColor = UIColor.nodesColor
+        castStyle.castViews.mediaControl.miniController.backgroundColor = .nodesColor
         castStyle.castViews.mediaControl.miniController.bodyTextColor = .white
         castStyle.castViews.mediaControl.miniController.buttonTextColor = .white
         castStyle.castViews.mediaControl.miniController.headingTextColor = .white

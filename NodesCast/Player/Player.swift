@@ -23,6 +23,8 @@ enum PlaybackState {
 
 class Player: UIView {
     
+    private let timeObserver = "currentItem.loadedTimeRanges"
+    
     var mediaItem: MediaItem!
     private var player: AVPlayer!
     private var playerLayer: AVPlayerLayer!
@@ -45,11 +47,6 @@ class Player: UIView {
         super.init(frame: frame)
         
         backgroundColor = .lightGray
-        listenForCastConnection()
-        
-        if CastManager.shared.hasConnectionEstablished {
-            playbackState = .createdCast
-        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -59,14 +56,14 @@ class Player: UIView {
     override func removeFromSuperview() {
         super.removeFromSuperview()
         
-        player.removeObserver(self, forKeyPath: "status")
+        player.removeObserver(self, forKeyPath: timeObserver)
     }
     
     func initPlayerLayer() {
         guard let url = URL(string: mediaItem.videoUrl) else { return }
         
         player = AVPlayer(url: url)
-        player.addObserver(self, forKeyPath: "status", options: .new, context: nil)
+        player.addObserver(self, forKeyPath: timeObserver, options: .new, context: nil)
         playerLayer = AVPlayerLayer(player: player)
         layer.addSublayer(playerLayer)
         playerLayer.frame = bounds
@@ -87,73 +84,14 @@ class Player: UIView {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if object is AVPlayer && keyPath == "status" {
-            if player.status == AVPlayerStatus.readyToPlay {
+        if object is AVPlayer && keyPath == timeObserver {
+            let loadedTimeRanges = player.currentItem?.loadedTimeRanges
+            guard let timeRanges = loadedTimeRanges, timeRanges.count > 0, let timeRange = timeRanges[0] as? CMTimeRange else { return }
+            let currentBufferDuration = CMTimeGetSeconds(CMTimeAdd(timeRange.start, timeRange.duration))
+            if player.status == AVPlayerStatus.readyToPlay && currentBufferDuration > 2 {
                 createPlayPauseButton()
                 createButtonStackView()
                 spinner.stopAnimating()
-            }
-        }
-    }
-    
-    // MARK: - Add Cast Connection Listener
-    
-    private func listenForCastConnection() {
-        let sessionStatusListener: (CastSessionStatus) -> Void = { status in
-            switch status {
-            case .started:
-                self.startCastPlay()
-            case .resumed:
-                self.continueCastPlay()
-            case .ended, .failedToStart:
-                if self.playbackState == .playCast {
-                    self.playbackState = .pause
-                    self.startPlayer(nil)
-                } else if self.playbackState == .pauseCast {
-                    self.playbackState = .play
-                    self.pausePlayer(nil)
-                }
-            default: break
-            }
-        }
-        
-        CastManager.shared.addSessionStatusListener(listener: sessionStatusListener)
-
-    }
-    
-    private func startCastPlay() {
-        guard let currentItem = player.currentItem else { return }
-        let currentTime = player.currentTime().seconds
-        let duration = currentItem.asset.duration.seconds
-        playbackState = .playCast
-        player.pause()
-        let castMediaInfo = CastManager.shared.buildMediaInformation(with: mediaItem.name, with: mediaItem.about, with: "Nodes", with: duration, with: mediaItem.videoUrl, with: GCKMediaStreamType.buffered, with: mediaItem.thumbnailUrl)
-        CastManager.shared.startSelectedItemRemotely(castMediaInfo, at: currentTime, completion: { done in
-            if !done {
-                self.playbackState = .pause
-                self.startPlayer(nil)
-            } else {
-                self.scheduleCastTimer()
-            }
-        })
-    }
-    
-    private func continueCastPlay() {
-        playbackState = .playCast
-        CastManager.shared.playSelectedItemRemotely(to: nil) { (done) in
-            if !done {
-                self.playbackState = .pause
-                self.startPlayer(nil)
-            }
-        }
-    }
-    
-    private func pauseCastPlay() {
-        playbackState = .pauseCast
-        CastManager.shared.pauseSelectedItemRemotely(to: nil) { (done) in
-            if !done {
-                self.playbackState = .pause
-                self.startPlayer(nil)
             }
         }
     }
@@ -198,34 +136,16 @@ class Player: UIView {
     // MARK: Start Player
     
     @objc private func startPlayer(_ sender: Any?) {
-        if playbackState == .pause || playbackState == .created {
-            scheduleLocalTimer()
             player?.play()
             playbackState = .play
-        } else if playbackState == .createdCast {
-            scheduleCastTimer()
-            startCastPlay()
-        } else {
-            scheduleCastTimer()
-            player?.pause()
-            playbackState = .playCast
-            continueCastPlay()
-        }
-        
         changeToPauseButton()
     }
 
     // MARK: Pause Player
     
     @objc private func pausePlayer(_ sender: Any?) {
-        if playbackState == .play {
             player?.pause()
             playbackState = .pause
-        } else {
-            player?.pause()
-            playbackState = .pauseCast
-            pauseCastPlay()
-        }
         
         changeToPlayButton()
     }
@@ -319,40 +239,7 @@ class Player: UIView {
         currentTimeLabel.text = currentTime.toTimeString() as String
         
     }
-    
-    // MARK: - Update slider on Cast
-    
-    private func scheduleCastTimer() {
-        DispatchQueue.main.async {
-            switch self.playbackState {
-            case .playCast, .pauseCast, .createdCast:
-                self.localTimer?.invalidate()
-                self.localTimer = nil
-                self.castTimer?.invalidate()
-                self.castTimer = Timer.scheduledTimer(timeInterval: 0.5,
-                                                      target: self,
-                                                      selector: #selector(self.sendCurrentTimeCastSessionRequest),
-                                                      userInfo: nil,
-                                                      repeats: true)
-            default:
-                self.castTimer?.invalidate()
-                self.castTimer = nil
-            }
-        }
-    }
-    
-    @objc private func sendCurrentTimeCastSessionRequest() {
-        CastManager.shared.getSessionCurrentTime { (time) in
-            guard let time = time,
-                  let currentItem = player.currentItem else { return }
-            let duration = currentItem.asset.duration.seconds
-            self.slider.value = Float(time / duration)
-            
-            self.totalTimeLabel.text = duration.toTimeString() as String
-            self.currentTimeLabel.text = time.toTimeString() as String
-        }
-    }
-    
+
     // MARK: - Player Slider Actions
     
     @objc private func sliderValueChanged(_ sender: UISlider) {
@@ -362,7 +249,6 @@ class Player: UIView {
         let timeToSeek = duration * Double(sender.value)
         
         player.seek(to: CMTime.init(seconds: timeToSeek, preferredTimescale: CMTimeScale.max))
-        sendChangeToCast(time: timeToSeek)
     }
     
     private func addSliderRecognizers() {
@@ -383,19 +269,6 @@ class Player: UIView {
         let duration = currentItem.asset.duration.seconds
         let timeToSeek = duration * Double(slider.value)
         player.seek(to: CMTime.init(seconds: timeToSeek, preferredTimescale: CMTimeScale.max))
-        sendChangeToCast(time: timeToSeek)
     }
     
-    private func sendChangeToCast(time: TimeInterval) {
-        //if we are in Cast Mode then restart the cast at the position slided at
-        if playbackState == .pauseCast || playbackState == .playCast {
-            let currentTime = player.currentTime().seconds
-            CastManager.shared.playSelectedItemRemotely(to: currentTime, completion: { (done) in
-                if !done {
-                    self.playbackState = .pause
-                    self.startPlayer(nil)
-                }
-            })
-        }
-    }
 }

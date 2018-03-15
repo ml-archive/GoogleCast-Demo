@@ -14,12 +14,10 @@
 		423008BE205911410014B591 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 423008BC205911410014B591 /* LaunchScreen.storyboard */; };
 		423008CA205916660014B591 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008C9205916660014B591 /* Player.swift */; };
 		423008CC20591B7C0014B591 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008CB20591B7C0014B591 /* Style.swift */; };
-		423008CE205921720014B591 /* Castable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008CD205921720014B591 /* Castable.swift */; };
 		423008D0205945110014B591 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008CF205945110014B591 /* FirstViewController.swift */; };
 		423008D220594CEA0014B591 /* MediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008D120594CEA0014B591 /* MediaItem.swift */; };
 		423008D420594F930014B591 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008D320594F930014B591 /* TableViewCell.swift */; };
 		423008D620594FAD0014B591 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 423008D520594FAD0014B591 /* TableViewCell.xib */; };
-		423008DA205953BA0014B591 /* CastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008D9205953BA0014B591 /* CastManager.swift */; };
 		423008DD205975850014B591 /* UIColor+NodesColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008DC205975850014B591 /* UIColor+NodesColor.swift */; };
 		423008E12059807F0014B591 /* TimeInterval+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423008E02059807F0014B591 /* TimeInterval+String.swift */; };
 		423008E6205A6D1A0014B591 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 423008E5205A6D1A0014B591 /* HomeKit.framework */; };
@@ -38,12 +36,10 @@
 		423008BF205911410014B591 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		423008C9205916660014B591 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		423008CB20591B7C0014B591 /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
-		423008CD205921720014B591 /* Castable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Castable.swift; sourceTree = "<group>"; };
 		423008CF205945110014B591 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		423008D120594CEA0014B591 /* MediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaItem.swift; sourceTree = "<group>"; };
 		423008D320594F930014B591 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		423008D520594FAD0014B591 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
-		423008D9205953BA0014B591 /* CastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastManager.swift; sourceTree = "<group>"; };
 		423008DC205975850014B591 /* UIColor+NodesColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+NodesColor.swift"; sourceTree = "<group>"; };
 		423008E02059807F0014B591 /* TimeInterval+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+String.swift"; sourceTree = "<group>"; };
 		423008E2205A6D150014B591 /* NodesCast.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NodesCast.entitlements; sourceTree = "<group>"; };
@@ -92,7 +88,6 @@
 				423008DE205978440014B591 /* First ViewController */,
 				423008DF205978520014B591 /* Player ViewController */,
 				423008C8205916550014B591 /* Player */,
-				423008DB205953C00014B591 /* Cast Manager */,
 				423008B7205911410014B591 /* Main.storyboard */,
 				423008BC205911410014B591 /* LaunchScreen.storyboard */,
 				423008BF205911410014B591 /* Info.plist */,
@@ -109,15 +104,6 @@
 				423008C9205916660014B591 /* Player.swift */,
 			);
 			path = Player;
-			sourceTree = "<group>";
-		};
-		423008DB205953C00014B591 /* Cast Manager */ = {
-			isa = PBXGroup;
-			children = (
-				423008CD205921720014B591 /* Castable.swift */,
-				423008D9205953BA0014B591 /* CastManager.swift */,
-			);
-			path = "Cast Manager";
 			sourceTree = "<group>";
 		};
 		423008DE205978440014B591 /* First ViewController */ = {
@@ -301,9 +287,7 @@
 				423008D220594CEA0014B591 /* MediaItem.swift in Sources */,
 				423008B6205911410014B591 /* PlayerViewController.swift in Sources */,
 				423008D420594F930014B591 /* TableViewCell.swift in Sources */,
-				423008DA205953BA0014B591 /* CastManager.swift in Sources */,
 				423008E12059807F0014B591 /* TimeInterval+String.swift in Sources */,
-				423008CE205921720014B591 /* Castable.swift in Sources */,
 				423008B4205911410014B591 /* AppDelegate.swift in Sources */,
 				423008DD205975850014B591 /* UIColor+NodesColor.swift in Sources */,
 				423008CC20591B7C0014B591 /* Style.swift in Sources */,

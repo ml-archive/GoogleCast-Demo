@@ -10,7 +10,7 @@
 import UIKit
 import GoogleCast
 
-class FirstViewController: UIViewController, Castable {
+class FirstViewController: UIViewController {
     
     @IBOutlet weak private var tableView: UITableView! {
         didSet {
@@ -36,82 +36,8 @@ class FirstViewController: UIViewController, Castable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
-        // Do any additional setup after loading the view, typically from a nib.
-        
+                    
         title = "NodesCast"
-        createContainer()
-        createMiniMediaControl()
-        
-        addCastButton()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if mediaControlsContainerView != nil {
-            updateControlBarsVisibility()
-        }
-    }
-    
-    // MARK: - Cast Button
-    
-    private func addCastButton() {
-        castButton = googleCastBarButton
-        navigationItem.rightBarButtonItems = [castButton]
-    }
-    
-    // MARK: - GCKUIMiniMediaControlsViewController
-    
-    private func createContainer() {
-        mediaControlsContainerView = UIView(frame: CGRect(x: 0, y: view.frame.maxY, width: view.frame.width, height: 0))
-        mediaControlsContainerView.accessibilityIdentifier = "mediaControlsContainerView"
-        view.addSubview(mediaControlsContainerView)
-        mediaControlsContainerView.translatesAutoresizingMaskIntoConstraints = false
-        mediaControlsContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        mediaControlsContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        mediaControlsContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        miniMediaControlsHeightConstraint = mediaControlsContainerView.heightAnchor.constraint(equalToConstant: 0)
-        miniMediaControlsHeightConstraint.isActive = true
-    }
-    
-    private func createMiniMediaControl() {
-        let castContext = GCKCastContext.sharedInstance()
-        miniMediaControlsViewController = castContext.createMiniMediaControlsViewController()
-        miniMediaControlsViewController.delegate = self
-        mediaControlsContainerView.alpha = 0
-        miniMediaControlsViewController.view.alpha = 0
-        miniMediaControlsHeightConstraint.constant = miniMediaControlsViewController.minHeight
-        installViewController(miniMediaControlsViewController, inContainerView: mediaControlsContainerView)
-        
-        updateControlBarsVisibility()
-    }
-    
-    private func updateControlBarsVisibility() {
-        if miniMediaControlsViewController.active {
-            miniMediaControlsHeightConstraint.constant = miniMediaControlsViewController.minHeight
-            view.bringSubview(toFront: mediaControlsContainerView)
-        } else {
-            miniMediaControlsHeightConstraint.constant = 0
-        }
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.view.layoutIfNeeded()
-        }) { _ in //swiftlint:disable:this multiple_closures_with_trailing_closure
-            self.mediaControlsContainerView.alpha = 1
-            self.miniMediaControlsViewController.view.alpha = 1
-        }
-    }
-    
-    private func installViewController(_ viewController: UIViewController?, inContainerView containerView: UIView) {
-        if let viewController = viewController {
-            viewController.view.isHidden = true
-            addChildViewController(viewController)
-            viewController.view.frame = containerView.bounds
-            containerView.addSubview(viewController.view)
-            viewController.didMove(toParentViewController: self)
-            viewController.view.isHidden = false
-        }
     }
     
 }
@@ -145,12 +71,3 @@ extension FirstViewController: UITableViewDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
 }
-
-// MARK: - GCKUIMiniMediaControlsViewControllerDelegate
-
-extension FirstViewController: GCKUIMiniMediaControlsViewControllerDelegate {
-    func miniMediaControlsViewController(_ miniMediaControlsViewController: GCKUIMiniMediaControlsViewController, shouldAppear: Bool) {
-        updateControlBarsVisibility()
-    }
-}
-

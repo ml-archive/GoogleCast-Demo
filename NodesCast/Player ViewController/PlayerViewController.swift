@@ -9,7 +9,7 @@
 import UIKit
 import GoogleCast
 
-class PlayerViewController: UIViewController, Castable {
+class PlayerViewController: UIViewController {
     
     var mediaItem: MediaItem!
     private var playerView: Player!
@@ -23,14 +23,6 @@ class PlayerViewController: UIViewController, Castable {
 
         createPlayerView()
         
-        addCastButton()
-    }
-
-    // MARK: - Cast Button
-    
-    private func addCastButton() {
-        castButton = googleCastBarButton
-        navigationItem.rightBarButtonItems = [castButton]
     }
     
     // MARK: - Player

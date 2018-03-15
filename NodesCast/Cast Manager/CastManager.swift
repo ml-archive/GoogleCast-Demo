@@ -55,7 +55,7 @@ class CastManager: NSObject {
     
     private func initialiseContext() {
         //application Id registered
-        let options = GCKCastOptions(discoveryCriteria: GCKDiscoveryCriteria.init(applicationID: "EC926046"))
+        let options = GCKCastOptions(discoveryCriteria: GCKDiscoveryCriteria.init(applicationID: "B21B9F3A"))
         options.disableDiscoveryAutostart = false
         GCKCastContext.setSharedInstanceWith(options)
         GCKCastContext.sharedInstance().useDefaultExpandedMediaControls = true
